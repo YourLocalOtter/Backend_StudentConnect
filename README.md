@@ -1,8 +1,8 @@
 # Connect with Students
 ## Developers!
-You will need to install the following modules `fastapi` and `sqlalchemy`.
+You will need to install the following modules `fastapi`,`sqlalchemy` (database), and `snowflake-id` (which generates unique ids for everyone).
 ```
-pip install fastapi sqlalchemy
+pip install fastapi sqlalchemy snowflake-id
 ```
 For testing you also need a "ASGI server" which I don't know what it stands for. Here's a command for installing uvicorn.
 ```
