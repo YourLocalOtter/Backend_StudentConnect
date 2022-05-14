@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from . import models, utils, schemas
+import models, utils, schemas
 
 # get user data
 

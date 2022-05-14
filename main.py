@@ -1,7 +1,7 @@
 from typing import Union, List
 # let's get the database from the other file
-from . import crud, models, schemas
-from .database import SessionLocal, engine
+import crud, models, schemas
+from database import SessionLocal, engine
 
 # if database doesn't exist then make them
 models.Base.metadata.create_all(bind=engine)
