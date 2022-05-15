@@ -5,4 +5,3 @@ def hash_pwd(password):
 
 def check_pwd(potiential_passowrd, hashed):
     return bcrypt.checkpw(potiential_passowrd.encode('utf-8'), hashed)
-    

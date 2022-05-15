@@ -18,3 +18,14 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+class UserPrivate(UserBase):
+    email: str
+    realname: str
+    username: str
+
+class UserSemiPrivate(UserBase):
+    realname: str
+class UserAuthenticateReq(BaseModel):
+    email: str
+    password: str

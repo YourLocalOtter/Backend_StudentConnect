@@ -1,6 +1,6 @@
 from typing import Union, List
 # let's get the database from the other file
-import crud, models, schemas
+import crud, models, schemas, utils, dependency
 from database import SessionLocal, engine
 
 # if database doesn't exist then make them
@@ -11,6 +11,10 @@ from sqlalchemy.orm import Session
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
+
+from jose import jwt
+
+import config
 
 app = FastAPI()
 
@@ -66,7 +70,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 	return crud.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=List[schemas.User])
+@app.get("/users", response_model=List[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 	if limit > 100:
 		# why in the world would you want to look at more than 100 users at a time
@@ -74,6 +78,27 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 	users = crud.get_users(db, skip=skip, limit=limit)
 	return users
 
+import datetime
+
+@app.post("/users/authenticate")
+def authenticate_a_user(user_req: schemas.UserAuthenticateReq, db: Session = Depends(get_db)):
+	# check if the user exists
+	db_user = crud.get_user_by_email(db, email=user_req.email)
+	if db_user is None:
+		raise HTTPException(status_code=400, detail="Invalid email or password")
+	# check if the password is correct
+	if not utils.check_pwd(user_req.password, db_user.hashed_password):
+		raise HTTPException(status_code=400, detail="Invalid email or password")
+	# if it passes all the tests, return the user
+
+	return jwt.encode({"uid": db_user.id,"exp":datetime.datetime.utcnow() + datetime.timedelta(minutes=15)},key = config.SECRET)
+
+@app.get("/users/me", response_model = schemas.User)
+def read_current_user(uid: int = Depends(dependency.check_access),db: Session = Depends(get_db)):
+	db_user = crud.get_user(db, user_id = uid)
+	if db_user is None:
+		raise HTTPException(status_code = 404, detail="User not found")
+	return db_user
 
 @app.get("/users/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
