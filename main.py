@@ -93,7 +93,7 @@ def authenticate_a_user(user_req: schemas.UserAuthenticateReq, db: Session = Dep
 
 	return jwt.encode({"uid": db_user.id,"exp":datetime.datetime.utcnow() + datetime.timedelta(minutes=15)},key = config.SECRET)
 
-@app.get("/users/me", response_model = schemas.User)
+@app.get("/users/me", response_model = schemas.UserPrivate)
 def read_current_user(uid: int = Depends(dependency.check_access),db: Session = Depends(get_db)):
 	db_user = crud.get_user(db, user_id = uid)
 	if db_user is None:
