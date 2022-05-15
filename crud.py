@@ -43,8 +43,8 @@ def get_forum(db: Session, forum_id: int):
 def get_forum_by_name(db: Session, forum_name: str):
     return db.query(models.Forum).filter(models.Forum.name == forum_name).first()
 
-def create_topic(db: Session, topic):
-    db_topic = models.Topic(name=topic.name, id=next(idgen), topic_id=next(idgen))
+def create_topic(db: Session, topic: str, uid: int):
+    db_topic = models.Topic(name=topic.name, id=next(idgen), topic_id=next(idgen), who_started_id=uid)
     db.add(db_topic)
     db.commit()
     db.refresh(db_topic)

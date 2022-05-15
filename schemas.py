@@ -30,16 +30,24 @@ class UserAuthenticateReq(BaseModel):
     email: str
     password: str
 
-class Forum(BaseModel):
+class ForumBase(BaseModel):
     name: str
     desc: str
     banner_url: str
 
-class Topic(BaseModel):
-    name: str
-    topic_id: int
-    who_started_id: int
+class Forum(ForumBase):
+    id: int
 
-class Post(BaseModel):
+class TopicBase(BaseModel):
+    name: str
+    
+class Topic(TopicBase):
+    who_started_id: int
+    id: int
+
+class PostBase(BaseModel):
     content: str
     poster_id: int
+
+class Post(PostBase):
+    pass
