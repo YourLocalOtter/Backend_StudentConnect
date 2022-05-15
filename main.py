@@ -8,7 +8,9 @@ models.Base.metadata.create_all(bind=engine)
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
 app = FastAPI()
 
@@ -23,11 +25,24 @@ origins = [
 
 app.add_middleware(
 	CORSMiddleware,
-	allow_origins=origins,
+	allow_origins=origins, # using all for now cause whitelist causes bugs
 	allow_credentials=True,
 	allow_methods=["*"],
 	allow_headers=["*"],
 )
+
+# nasty workaround for cors not getting set on error
+# sourced from
+# https://github.com/tiangolo/fastapi/issues/775#issuecomment-592946834
+async def catch_exceptions_middleware(request: Request, call_next):
+	try:
+		return await call_next(request)
+	except Exception as ex:
+		print("Server Error!",ex)
+		return Response("Internal server error", status_code=500)
+
+
+app.middleware('http')(catch_exceptions_middleware)
 
 # uh I believe this make sures we actually have a database when someone makes a request
 def get_db():

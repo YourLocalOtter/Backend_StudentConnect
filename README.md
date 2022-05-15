@@ -4,6 +4,10 @@ You will need to install the following modules `fastapi`,`sqlalchemy` (database)
 ```
 pip install fastapi sqlalchemy snowflake-id
 ```
+Next we'll install something to make JWT session tokens (you don't need to understand this).
+```
+pip install python-jose[cryptography] 
+```
 For testing you also need a "ASGI server" which I don't know what it stands for. Here's a command for installing uvicorn.
 ```
 pip install "uvicorn[standard]"
