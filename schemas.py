@@ -5,7 +5,6 @@ from pydantic import BaseModel
 class UserBase(BaseModel):
     username: str
 
-
 class UserCreate(UserBase):
     email: str
     realname: str
@@ -26,6 +25,21 @@ class UserPrivate(User):
 
 class UserSemiPrivate(User):
     realname: str
+
 class UserAuthenticateReq(BaseModel):
     email: str
     password: str
+
+class Forum(BaseModel):
+    name: str
+    desc: str
+    banner_url: str
+
+class Topic(BaseModel):
+    name: str
+    topic_id: int
+    who_started_id: int
+
+class Post(BaseModel):
+    content: str
+    poster_id: int

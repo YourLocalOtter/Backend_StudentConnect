@@ -107,6 +107,13 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 		raise HTTPException(status_code=404, detail="User not found")
 	return db_user
 
+@app.get("/forums/me", response_model = schemas.UserPrivate)
+def read_current_user(uid: int = Depends(dependency.check_access),db: Session = Depends(get_db)):
+	db_user = crud.get_user(db, user_id = uid)
+	if db_user is None:
+		raise HTTPException(status_code = 404, detail="User not found")
+	return db_user
+
 def main():
 	# Run!
 	print("Not supposed to run it this way")

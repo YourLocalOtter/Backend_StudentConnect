@@ -29,3 +29,29 @@ def create_user(db: Session, user):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def create_forum(db: Session, forum):
+    db_forum = models.Forum(title=forum.title, id=next(idgen), banner_url = forum.banner_url)
+    db.add(db_forum)
+    db.commit()
+    db.refresh(db_forum)
+    return db_forum
+
+def get_forum(db: Session, forum_id: int):
+    return db.query(models.Forum).filter(models.Forum.id == forum_id).first()
+
+def get_forum_by_name(db: Session, forum_name: str):
+    return db.query(models.Forum).filter(models.Forum.name == forum_name).first()
+
+def create_topic(db: Session, topic):
+    db_topic = models.Topic(name=topic.name, id=next(idgen), topic_id=next(idgen))
+    db.add(db_topic)
+    db.commit()
+    db.refresh(db_topic)
+    return db_topic
+
+def get_topic_by_name(db: Session, topic_name: str):
+    return db.query(models.Topic).filter(models.Topic.name == topic_name).first()
+
+def get_posts_for_topic(db: Session, topic_id: int):
+    return db.query(models.Post).filter(models.Post.id == topic_id).first()
